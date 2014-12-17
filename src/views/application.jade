@@ -1,0 +1,194 @@
+html
+  head
+    link(href='http://fonts.googleapis.com/css?family=Quicksand', rel='stylesheet', type='text/css')
+    script(src='/socket.io/socket.io.js')
+    link(rel="stylesheet", type="text/css", href="/assets/mystyles.css")
+  script.
+    // global variables
+    var canvas,ctx;
+    var paint = false, clickX = [], clickY = [], clickDrag = [];
+    var lineWidth = 1;
+    var clickLineWidth = [];
+    var currentColor;
+    var clickColor = [];
+    function init(){
+    canvas = document.querySelector("#canvas");
+    ctx = canvas.getContext("2d");
+    setupUI();
+    //Hook up event listener
+    canvas.addEventListener("mousedown", doMousedown);
+    canvas.addEventListener("mousemove",doMousemove);
+    canvas.addEventListener("mouseup",doMouseup);
+    canvas.addEventListener("mouseout",doMouseout);
+    connectSocket();
+    }
+    function connectSocket(e) {
+    var message = document.querySelector("#message");
+    var chat = document.querySelector("#chat");
+    var socket = io.connect();
+    socket.on("connect", function() {
+    console.log("connecting");
+    var user = "User " + Math.round(Math.random()*(200-1)+1);
+    socket.emit("join", { name: user });
+    });
+    socket.on("msg", function(data) {
+    chat.value = chat.value + "\n" + data.name + ": " + data.msg;
+    });
+    document.querySelector("#send").addEventListener("click", function() {
+    if(message.value.length > 0 ) {
+    socket.emit("msg", {msg: message.value});
+    }
+    });
+    }
+    function doMousedown(e){
+    paint = true;
+    var mouse = getMouse(e);
+    addClick(mouse.x,mouse.y,false);
+    redraw();
+    }
+    function doMousemove(e){
+    if(paint){
+    var mouse = getMouse(e);
+    addClick(mouse.x,mouse.y,true);
+    redraw();
+    }
+    }
+    function doMouseup(e){
+    paint = false;
+    }
+    function doMouseout(e){
+    paint = false;
+    }
+    function addClick(x,y,dragging){
+    clickX.push(x);
+    clickY.push(y);
+    clickDrag.push(dragging);
+    clickLineWidth.push(lineWidth);
+    clickColor.push(currentColor);
+    }
+    function doColorButtonClick(e){
+    currentColor = e.target.value;
+    }
+    function createElement(){
+    }
+    function appendChild(){
+    }
+    function redraw(){
+    canvas.width = canvas.width;
+    ctx.strokeStyle = "#df4b26";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 5;
+    for(var i = 0; i < clickX.length; i++){
+    ctx.beginPath();
+    if(clickDrag[i] && i > 0){
+    ctx.moveTo(clickX[i-1], clickY[i-1]);
+    }
+    else{
+    ctx.moveTo(clickX[i]-1, clickY[i]);
+    }
+    ctx.lineTo(clickX[i],clickY[i]);
+    ctx.closePath();
+    ctx.lineJoin = "round";
+    ctx.lineWidth = clickLineWidth[i];
+    ctx.strokeStyle = clickColor[i];
+    ctx.stroke();
+    }
+    }
+    function clearCanvas(){
+    canvas.width = canvas.width;
+    clickX = [];
+    clickY = [];
+    clickDrag = [];
+    clickColor = [];
+    }
+    function setupUI(){
+    console.log("setupUI called");
+    // clear button
+    var clearButton = document.querySelector("#clearButton");
+    clearButton.addEventListener("click",clearCanvas);
+    // save button
+    var saveButton = document.querySelector("#saveButton");
+    saveButton.addEventListener("click",function(e){
+    var data = canvas.toDataURL();
+    var windowName = "canvasImage";
+    var windowOptions = "left=0,top=0,width="+ canvas.width + ",height=" + canvas.height + ",toolbar=0,resizable=0";
+    window.open(data,windowName,windowOptions);
+    });
+    // lineWidthSelect
+    var lineWidthSelect = document.querySelector("#lineWidthSelect");
+    lineWidthSelect.innerHTML = "";
+    for(var i = 1; i <= 10; i++){
+    var newOption = document.createElement("option");
+    newOption.setAttribute("value",i);
+    newOption.innerHTML = i + "pixel";
+    lineWidthSelect.appendChild(newOption);
+    }
+    lineWidthSelect.addEventListener("change", function(e){
+    lineWidth = e.target.value;
+    console.log(lineWidth);
+    });
+    // color buttons
+    var redButton = document.querySelector("#redButton");
+    redButton.addEventListener("click",doColorButtonClick);
+    var greenButton = document.querySelector("#greenButton");
+    greenButton.addEventListener("click",doColorButtonClick);
+    var yellowButton = document.querySelector("#yellowButton");
+    yellowButton.addEventListener("click",doColorButtonClick);
+    var blueButton = document.querySelector("#blueButton");
+    blueButton.addEventListener("click",doColorButtonClick);
+    var whiteButton = document.querySelector("#whiteButton");
+    whiteButton.addEventListener("click",doColorButtonClick);
+    var blackButton = document.querySelector("#blackButton");
+    blackButton.addEventListener("click",doColorButtonClick);
+    }
+    function getMouse(e){
+    var mouse = {};
+    mouse.x = e.pageX - canvas.offsetLeft;
+    mouse.y = e.pageY - canvas.offsetTop;
+    return mouse;
+    }
+    window.onload = init;
+  body
+      #boundingbox
+        canvas#canvas(height="500", width="500")
+        #chatroom
+            div
+                br
+                textarea#chat(rows="37", cols="45", readonly="")  
+                br
+                #mytext
+                    span(style="color:white")
+                        label(for="message") Message: 
+                    input#message(type="text", name="message")
+                    input#send(type="button", value="send") 
+                    br
+                    span(style="color:white")
+                        a(href="/login" action="/logout") Get me the hell outta doge.
+        #controls
+            div
+            span
+                input#clearButton(type="button", value="Clear Canvas")
+            span(style="float:right")
+                input#saveButton(type="button", value="Save Image")
+            br
+            div
+            span
+                button#redButton(type="button", value="#FF0000") Red
+            span
+                button#greenButton(type="button", value="#00FF00") Green
+            span
+                button#yellowButton(type="button", value="#FFFF00") Yellow
+            span
+                button#blueButton(type="button", value="#0000FF") Blue
+            span
+                button#blackButton(type="button", value="#000000") Black
+            span
+                button#whiteButton(type="button", value="#FFFFFF") White
+            span(style="float:right;")
+                label(for="lineWidthSelect") Line Thickness
+                select#lineWidthSelect
+                    option(value="???") ???
+                    option(value="!!!") !!!
+        br
+        br
+    

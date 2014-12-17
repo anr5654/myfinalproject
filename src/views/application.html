@@ -1,0 +1,37 @@
+extends ./base.jade
+block append style
+    link(rel="stylesheet", type="text/css", href="/assets/style.css")
+script
+  function connectSocket(e) {
+    var message = document.querySelector("#message");
+    var chat = document.querySelector("#chat");
+    var socket = io.connect('http://localhost:3000');
+    socket.on('connect', function() {
+    console.log('connecting');
+    var user = Account.user;
+    socket.emit('join', { name: user });
+    });
+    socket.on('msg', function(data) {
+    chat.value = chat.value + "\\n" + data.name + ": " + data.msg;
+    });
+    document.querySelector("#send").addEventListener("click", function() {
+    if(message.value.length > 0 ) {
+    socket.emit('msg', {msg: message.value});
+    }
+    });
+    }
+    function init() {
+    document.querySelector("#connect").addEventListener('click', connectSocket);
+    }
+    //when the page is loaded, call init
+    window.onload = init;
+  style
+    textarea {
+    display: block;
+    background-color: #EEEEEE;
+    }
+  body
+    label(for='message') Message:
+    input#message(name='message', type='text')
+    input#send(type='button', value='send')
+    textarea#chat(rows='20', cols='40', readonly='readonly')

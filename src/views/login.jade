@@ -1,0 +1,22 @@
+html
+  head
+    link(href='http://fonts.googleapis.com/css?family=Quicksand', rel='stylesheet', type='text/css')
+    link(rel="stylesheet", type="text/css", href="/assets/mystyles.css")  
+  body
+    #content
+      form#loginForm(action="login", method="POST")
+        span(style='font-size: 50px;')
+          b Login
+        br
+        p#myerrorinfo
+        br
+        | Username:
+        input(type='text', name='username')
+        br
+        br
+        | Password:
+        input(type='text', name='pass')
+        br
+        br
+        a(href="/signup") New User?
+        input(type='submit', value='Sign me on.') 

@@ -1,0 +1,108 @@
+<style>
+body
+{
+	font-family: 'Quicksand', sans-serif;
+	color: #ffffff;
+	background: #03194D;
+	text-align: center;
+	height: auto;
+	border-radius: 7px;
+}
+
+#boundingbox{
+	font-family: 'Quicksand', sans-serif;
+	background: #03194D;
+	height: auto;
+}
+
+textarea {
+	font-family: 'Quicksand', sans-serif;
+	display: block;
+	background-color: #EEEEEE;
+
+}
+
+#mytext{
+	display: inline;
+}
+
+button{
+	font-family: 'Quicksand', sans-serif;
+}
+
+label{
+	font-family: 'Quicksand', sans-serif;
+}
+
+#chatroom
+{
+	font-family: 'Quicksand', sans-serif;
+	display: block;
+	text-align:center;
+	display: inline;
+	position: absolute;
+	right: 45px;
+	left: 550px;
+}
+
+#Loginbutton
+{
+	border-radius: 6px;
+	font-family: 'Verdana';
+	width: 150px;
+	font-size: 18px;
+}
+
+#Signupbutton
+{
+	border-radius: 6px;
+	font-family: 'Verdana';
+	width: 150px;
+	font-size: 18px;
+}
+
+#content
+{
+	font-family: 'Quicksand', sans-serif;
+	color: #ffffff;
+	background: #03194D;
+	text-align: center;
+	height: auto;
+	width: 30%;
+	right: 33%;
+	border-radius: 7px;
+	top: 40%;
+	position: absolute;
+}
+
+#canvas,#controls{
+	background: #ffffff;
+	font-family: 'Quicksand', sans-serif;
+	cursor: pointer;
+	margin-left: 10px;
+	margin-top: 10px;
+	box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+	margin-left: 10px;
+	margin-top: 10px;
+		
+}
+ 	
+#controls{
+ 	padding:5px;
+ 	width:490px;
+}
+ 	
+#controls div{
+ 	margin-bottom:5px;
+ }
+
+#mycontent
+{
+	font-family: 'Quicksand', sans-serif;
+	color: #ffffff;
+	background: #03194D;
+	text-align: center;
+	height: auto;
+	border-radius: 7px;
+}
+</style>
